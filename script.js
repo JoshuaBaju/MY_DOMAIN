@@ -1,4 +1,8 @@
-let tasks = [];
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+document.addEventListener("DOMContentLoaded", () => {
+    updateTaskList();
+});
 
 function addTask() {
     let taskName = document.getElementById("task-name").value.trim();
@@ -21,6 +25,7 @@ function addTask() {
     };
 
     tasks.push(task);
+    saveTasks();
     updateTaskList();
     document.getElementById("task-name").value = "";
     document.getElementById("timer").value = "";
@@ -33,6 +38,7 @@ function addTask() {
 function toggleTask(taskId) {
     let task = tasks.find(t => t.id === taskId);
     task.completed = !task.completed;
+    saveTasks();
     updateTaskList();
 }
 
@@ -83,6 +89,8 @@ function startTimer(taskId) {
 
     let interval = setInterval(() => {
         task.remainingTime--;
+        saveTasks(); // Save remaining time in localStorage
+
         if (task.remainingTime <= 0) {
             clearInterval(interval);
             document.getElementById("alarm-sound").play();
@@ -91,6 +99,10 @@ function startTimer(taskId) {
             timerElement.innerText = formatTime(task.remainingTime);
         }
     }, 1000);
+}
+
+function saveTasks() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
 function formatTime(seconds) {
