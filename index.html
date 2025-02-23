@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>TO DO</h1>
+
+        <div class="progress-container">
+            <p>Completed: <span id="progress-text">0%</span></p>
+            <div class="progress-bar">
+                <div id="progress-fill"></div>
+            </div>
+            <p id="motivation-text">Let's get started! 🚀</p>
+        </div>
+
+        <ul id="task-list"></ul>
+
+        <div class="task-input">
+            <input type="text" id="task-name" placeholder="Enter task name">
+            <select id="priority">
+                <option value="high">🔥 High</option>
+                <option value="medium">⚡ Medium</option>
+                <option value="low">💡 Low</option>
+            </select>
+            <input type="number" id="timer" placeholder="Reminder (minutes)">
+            <button onclick="addTask()">Add Task</button>
+        </div>
+    </div>
+
+    <audio id="alarm-sound" src="alarm.mp3"></audio> <!-- Alarm Sound -->
+
+    <script src="script.js"></script>
+
+</body>
+</html>
