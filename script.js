@@ -1,110 +1,122 @@
-let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+document.addEventListener("DOMContentLoaded", function () {
+    const taskInput = document.getElementById("task-input");
+    const prioritySelect = document.getElementById("priority-select");
+    const reminderTimeInput = document.getElementById("reminder-time");
+    const addTaskBtn = document.getElementById("add-task-btn");
+    const taskList = document.getElementById("task-list");
+    const progressBar = document.getElementById("progress-bar");
+    const progressText = document.getElementById("progress-text");
+    const restartBtn = document.getElementById("restart-btn");
+    const settingsBtn = document.getElementById("settings-btn");
+    const settingsPopup = document.getElementById("settings-popup");
+    const settingsClose = document.getElementById("settings-close");
+    const ringtonePicker = document.getElementById("ringtone-picker");
+    const alarmSound = document.getElementById("alarm-sound");
+    const popup = document.getElementById("popup");
+    const popupText = document.getElementById("popup-text");
+    const extendTimeBtn = document.getElementById("extend-time-btn");
+    
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    let timers = {}; // Store timers independently for each task
 
-document.addEventListener("DOMContentLoaded", () => {
-    updateTaskList();
-});
+    let ringtone = localStorage.getItem("ringtone") || "";
+    if (ringtone) alarmSound.src = ringtone;
 
-function addTask() {
-    let taskName = document.getElementById("task-name").value.trim();
-    let priority = document.getElementById("priority").value;
-    let timer = document.getElementById("timer").value;
-
-    if (!taskName) {
-        alert("Task name cannot be empty!");
-        return;
-    }
-
-    let priorityIcons = { high: "🔥", medium: "⚡", low: "💡" };
-    let task = {
-        id: Date.now(),
-        name: taskName,
-        priority: priorityIcons[priority],
-        completed: false,
-        timer: timer ? parseInt(timer) * 60 : null,
-        remainingTime: timer ? parseInt(timer) * 60 : null
-    };
-
-    tasks.push(task);
-    saveTasks();
-    updateTaskList();
-    document.getElementById("task-name").value = "";
-    document.getElementById("timer").value = "";
-
-    if (task.timer) {
-        startTimer(task.id);
-    }
-}
-
-function toggleTask(taskId) {
-    let task = tasks.find(t => t.id === taskId);
-    task.completed = !task.completed;
-    saveTasks();
-    updateTaskList();
-}
-
-function updateTaskList() {
-    tasks.sort((a, b) => {
-        let priorityOrder = { "🔥": 1, "⚡": 2, "💡": 3 };
-        return priorityOrder[a.priority] - priorityOrder[b.priority] || a.completed - b.completed;
-    });
-
-    let taskList = document.getElementById("task-list");
-    taskList.innerHTML = "";
-
-    tasks.forEach(task => {
-        let li = document.createElement("li");
-        li.className = `task ${task.completed ? "completed" : ""}`;
-        li.innerHTML = `
-            <span class="priority-icon">${task.priority}</span>
-            <span>${task.name}</span>
-            ${task.timer ? `<span class="timer" id="timer-${task.id}">${formatTime(task.remainingTime)}</span>` : ""}
-            <input type="checkbox" ${task.completed ? "checked" : ""} onclick="toggleTask(${task.id})">
-        `;
-        taskList.appendChild(li);
-    });
-
-    updateProgress();
-}
-
-function updateProgress() {
-    let completedTasks = tasks.filter(t => t.completed).length;
-    let totalTasks = tasks.length;
-    let percentage = totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100);
-
-    document.getElementById("progress-text").innerText = `${percentage}%`;
-    document.getElementById("progress-fill").style.width = `${percentage}%`;
-
-    let motivationText = document.getElementById("motivation-text");
-    if (percentage === 100) {
-        motivationText.innerText = "🎉 All done! Take a break! 🎉";
-        alert("✅ ALL TASKS COMPLETED! WELL DONE!");
-    } else {
-        motivationText.innerText = percentage >= 50 ? "You're halfway there! 🚀" : "Keep going! You got this! 💪";
-    }
-}
-
-function startTimer(taskId) {
-    let task = tasks.find(t => t.id === taskId);
-    let timerElement = document.getElementById(`timer-${task.id}`);
-
-    let interval = setInterval(() => {
-        task.remainingTime--;
-        saveTasks(); // Save remaining time in localStorage
-
-        if (task.remainingTime <= 0) {
-            clearInterval(interval);
-            document.getElementById("alarm-sound").play();
-            alert(`⏰ Reminder: "${task.name}" is due!`);
-        } else {
-            timerElement.innerText = formatTime(task.remainingTime);
+    ringtonePicker.addEventListener("change", function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const objectURL = URL.createObjectURL(file);
+            alarmSound.src = objectURL;
+            localStorage.setItem("ringtone", objectURL);
         }
-    }, 1000);
-}
+    });
 
-function saveTasks() {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-}
+    settingsBtn.addEventListener("click", () => settingsPopup.style.display = "block");
+    settingsClose.addEventListener("click", () => settingsPopup.style.display = "none");
 
-function formatTime(seconds) {
-    return `${Math.floor(seconds / 60)}m ${seconds % 60}s`;
-}
+    function updateProgress() {
+        const totalTasks = tasks.length;
+        const completedTasks = tasks.filter(task => task.completed).length;
+        const percentage = totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100);
+
+        progressBar.value = percentage;
+        progressText.textContent = percentage === 100 ? "All done! 🎉" : `Progress: ${percentage}%`;
+    }
+
+    function startTimer(index) {
+        const task = tasks[index];
+        const timerElement = document.getElementById(`timer-${index}`);
+        
+        if (!task.remainingTime) {
+            task.remainingTime = task.reminderTime * 60; // Convert minutes to seconds
+        }
+
+        // If a timer already exists for this task, clear it
+        if (timers[index]) clearInterval(timers[index]);
+
+        timers[index] = setInterval(() => {
+            if (task.remainingTime <= 0) {
+                clearInterval(timers[index]);
+                delete timers[index];
+                alarmSound.play();
+                showPopup(`${task.name} Reminder!`, index);
+            } else {
+                task.remainingTime--;
+                timerElement.textContent = `${Math.floor(task.remainingTime / 60)}:${task.remainingTime % 60}`;
+            }
+        }, 1000);
+    }
+
+    function showPopup(message, index) {
+        popupText.textContent = message;
+        popup.style.display = "block";
+
+        extendTimeBtn.onclick = function () {
+            tasks[index].remainingTime += 300; // Extend by 5 minutes (adjustable)
+            popup.style.display = "none";
+            startTimer(index);
+        };
+    }
+
+    function addTask() {
+        const taskName = taskInput.value.trim();
+        const priority = prioritySelect.value;
+        const reminderTime = parseInt(reminderTimeInput.value);
+
+        if (!taskName) return;
+
+        const newTask = { name: taskName, priority, reminderTime, completed: false };
+        tasks.push(newTask);
+        updateProgress();
+        displayTasks();
+    }
+
+    function displayTasks() {
+        taskList.innerHTML = "";
+        tasks.forEach((task, index) => {
+            const listItem = document.createElement("li");
+            listItem.classList.add("task");
+            if (task.completed) listItem.classList.add("completed");
+
+            listItem.innerHTML = `
+                <span>${task.priority === "high" ? "🔥" : task.priority === "medium" ? "⚡" : "💡"} ${task.name}</span>
+                <span id="timer-${index}">${task.reminderTime}:00</span>
+            `;
+
+            taskList.appendChild(listItem);
+            if (!task.completed) startTimer(index);
+        });
+
+        updateProgress();
+    }
+
+    restartBtn.addEventListener("click", () => {
+        tasks = [];
+        Object.values(timers).forEach(clearInterval); // Stop all timers
+        timers = {}; // Clear timers
+        displayTasks();
+    });
+
+    addTaskBtn.addEventListener("click", addTask);
+    displayTasks();
+});
