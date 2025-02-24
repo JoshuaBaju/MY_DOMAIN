@@ -3,39 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To Do</title>
+    <title>To-Do Reminder</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
     <div class="container">
-        <h1>TO DO</h1>
-
+        <h1>To-Do</h1>
+        <button id="settings-btn">⚙️</button>
+        
         <div class="progress-container">
-            <p>Completed: <span id="progress-text">0%</span></p>
-            <div class="progress-bar">
-                <div id="progress-fill"></div>
-            </div>
-            <p id="motivation-text">Let's get started! 🚀</p>
+            <progress id="progress-bar" value="0" max="100"></progress>
+            <p id="progress-text">Let's get started!</p>
         </div>
 
         <ul id="task-list"></ul>
 
-        <div class="task-input">
-            <input type="text" id="task-name" placeholder="Enter task name">
-            <select id="priority">
+        <div class="controls">
+            <button id="restart-btn">Restart</button>
+        </div>
+
+        <div class="add-task">
+            <input type="text" id="task-input" placeholder="Enter task...">
+            <select id="priority-select">
                 <option value="high">🔥 High</option>
                 <option value="medium">⚡ Medium</option>
                 <option value="low">💡 Low</option>
             </select>
-            <input type="number" id="timer" placeholder="Reminder (minutes)">
-            <button onclick="addTask()">Add Task</button>
+            <input type="number" id="reminder-time" placeholder="Reminder (min)">
+            <button id="add-task-btn">Add Task</button>
         </div>
     </div>
 
-    <audio id="alarm-sound" src="alarm.mp3"></audio> <!-- Alarm Sound -->
+    <div id="popup" class="popup hidden">
+        <div class="popup-content">
+            <p id="popup-text"></p>
+            <button id="extend-time-btn">Extend Time</button>
+            <button id="popup-close">Close</button>
+        </div>
+    </div>
+
+    <div id="settings-popup" class="popup hidden">
+        <div class="popup-content">
+            <h2>Settings</h2>
+            <input type="file" id="ringtone-picker" accept="audio/*">
+            <label for="ringtone-picker">Choose Ringtone</label>
+            <button id="settings-close">Close</button>
+        </div>
+    </div>
+
+    <audio id="alarm-sound" src=""></audio>
 
     <script src="script.js"></script>
-
 </body>
 </html>
