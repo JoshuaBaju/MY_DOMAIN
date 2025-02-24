@@ -96,7 +96,7 @@ li {
     border-radius: 10px;
     color: black;
     box-shadow: 0px 0px 10px black;
-    z-index: 10;
+    z-index: 10000;
 }
 
 input, select, button {
