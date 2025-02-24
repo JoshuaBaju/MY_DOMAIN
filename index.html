@@ -1,57 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>To-Do Reminder</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="script.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do Reminder App</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-    <div class="container">
-        <header>
-            <span class="settings-icon" onclick="openSettings()">⚙️</span>
-            <h1>To-Do</h1>
-            <span class="restart-icon" onclick="restartApp()">🔄</span>
-        </header>
+  <div class="progress-container">
+    <p id="progress-text" class="progress-text">Progress: 0%</p>
+    <progress id="progress-bar" value="0" max="100"></progress>
+    <p id="motivation-text" class="motivation-text">Let's get started!</p>
+  </div>
 
-        <div class="progress-bar-container">
-            <div id="progress-bar"></div>
-            <span id="progress-text">0% Completed</span>
-            <p id="motivation-text">Let's get started!</p>
-        </div>
+  <!-- Settings & Restart Buttons -->
+  <button id="settings-btn">⚙️</button>
+  <button id="restart-btn">🔄</button>
 
-        <ul id="task-list"></ul>
+  <ul id="task-list"></ul>
 
-        <div class="task-entry">
-            <input type="text" id="task-name" placeholder="Enter task...">
-            <select id="priority">
-                <option value="high">🔥 High</option>
-                <option value="medium">⚡ Medium</option>
-                <option value="low">💡 Low</option>
-            </select>
-            <input type="number" id="reminder-time" placeholder="Mins">
-            <button onclick="addTask()">Add</button>
-        </div>
-    </div>
+  <div class="add-task-container">
+    <input type="text" id="task-input" placeholder="Enter your task">
+    <select id="priority-input">
+      <option value="high">🔥 High</option>
+      <option value="medium">⚡ Medium</option>
+      <option value="low">💡 Low</option>
+    </select>
+    <input type="number" id="reminder-time" placeholder="Minutes (optional)">
+    <button id="add-task">Add Task</button>
+  </div>
 
-    <!-- Alarm Popup -->
-    <div id="alarm-popup" class="popup">
-        <p id="alarm-message">Time's up!</p>
-        <button onclick="extendTimer(1)">+1 min</button>
-        <button onclick="extendTimer(2)">+2 min</button>
-        <button onclick="extendTimer(5)">+5 min</button>
-        <button onclick="extendTimer(10)">+10 min</button>
-        <button onclick="extendTimer(20)">+20 min</button>
-        <button onclick="closeAlarm()">Close</button>
-    </div>
-
-    <!-- Settings Popup -->
-    <div id="settings-popup" class="popup">
-        <h2>Settings</h2>
-        <label for="ringtone">Choose Ringtone:</label>
-        <input type="file" id="ringtone" accept="audio/*">
-        <button onclick="closeSettings()">Close</button>
-    </div>
+  <!-- Alarm Popup -->
+  <div id="alarm-popup" class="popup">
+    <p id="alarm-message">Time's Up!</p>
+    <button onclick="stopAlarm()">Close</button>
+    <button onclick="extend1()">+1 min</button>
+    <button onclick="extend2()">+2 min</button>
+    <button onclick="extend5()">+5 min</button>
+    <button onclick="extend10()">+10 min</button>
+    <button onclick="extend20()">+20 min</button>
+  </div>
+<div id="settings-popup" class="popup">
+    <p>Settings</p>
+    <input type="file" id="ringtone-picker">
+    <button onclick="closeSettings()">Close</button>
+</div>
+  <script src="script.js"></script>
 </body>
+
 </html>
