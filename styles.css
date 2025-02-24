@@ -1,79 +1,70 @@
 body {
     font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    background: linear-gradient(135deg, #0f172a, #1e3a8a);
     color: white;
     text-align: center;
-    padding: 20px;
+    margin: 0;
+    padding: 0;
 }
 
 .container {
     max-width: 400px;
     margin: auto;
-    background: rgba(255, 255, 255, 0.2);
     padding: 20px;
-    border-radius: 10px;
-    position: relative;
 }
 
-h1 {
-    font-size: 24px;
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.5em;
 }
 
-#settings-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    font-size: 24px;
+.restart-icon, .settings-icon {
     cursor: pointer;
+    font-size: 1.3em;
+}
+
+.task-entry {
+    display: flex;
+    gap: 5px;
+    margin-top: 20px;
+}
+
+.task-entry input, select {
+    padding: 5px;
+}
+
+.task-entry button {
+    padding: 5px 10px;
+    background-color: #1e40af;
     color: white;
+    border: none;
+    cursor: pointer;
 }
 
-.progress-container {
-    margin: 10px 0;
-}
-
-progress {
-    width: 100%;
-    height: 10px;
-    background: white;
-}
-
-#task-list {
+ul {
     list-style: none;
     padding: 0;
 }
 
-.task {
-    display: flex;
-    justify-content: space-between;
-    background: rgba(255, 255, 255, 0.3);
-    margin: 5px 0;
+li {
+    background: rgba(255, 255, 255, 0.1);
+    margin: 10px 0;
     padding: 10px;
     border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.task.completed {
+.task-done {
     text-decoration: line-through;
-    opacity: 0.6;
-}
-
-.controls {
-    margin: 10px 0;
-}
-
-.add-task {
-    margin-top: 20px;
-}
-
-button {
-    cursor: pointer;
-    padding: 5px;
-    margin: 5px;
+    color: gray;
 }
 
 .popup {
+    display: none;
     position: fixed;
     top: 50%;
     left: 50%;
@@ -82,9 +73,10 @@ button {
     color: black;
     padding: 20px;
     border-radius: 10px;
-    display: none;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
 }
 
-.hidden {
-    display: none;
+button {
+    margin-top: 10px;
+    padding: 10px;
 }
