@@ -101,5 +101,5 @@ li {
 
 input, select, button {
     position: relative;
-    z-index: 10;
+    z-index: 8;
 }
