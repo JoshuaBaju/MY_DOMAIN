@@ -118,6 +118,19 @@ function stopAlarm() {
   }
 }
 
+function requestPermissions() {
+    if (Notification.permission === "default") {
+        Notification.requestPermission();
+    }
+
+    navigator.mediaDevices?.getUserMedia({ audio: true }).catch(console.warn);
+
+    navigator.storage?.persist().then((granted) => {
+        if (!granted) console.log("Storage permission denied.");
+    });
+}
+
+document.addEventListener("DOMContentLoaded", requestPermissions);
 
 
 function extend1() {
