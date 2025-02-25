@@ -2,6 +2,8 @@ let tasks = [];
 let timers = {};
 let selectedRingtone = null;
 let activeTaskId = null; // Stores the task ID when alarm rings
+let alarmAudio = null;  // Stores the alarm sound instance
+
 
 // Add Task
 function addTask() {
@@ -88,22 +90,34 @@ function showAlarm(taskId) {
   let popup = document.getElementById("alarm-popup");
   popup.style.display = "block";
 
-  // Store task ID globally
+  // Store active task ID
   activeTaskId = taskId;
 
+  // Stop any previous alarm sound before playing a new one
+  if (alarmAudio) {
+    alarmAudio.pause();
+    alarmAudio.currentTime = 0;
+  }
+
   if (selectedRingtone) {
-    let audio = new Audio(URL.createObjectURL(selectedRingtone));
-    audio.play();
+    alarmAudio = new Audio(URL.createObjectURL(selectedRingtone));
+    alarmAudio.loop = true;  // Loop the sound until stopped
+    alarmAudio.play();
   }
 }
 
+
 // Stop Alarm
 function stopAlarm() {
-    document.getElementById("alarm-popup").style.display = "none";
-    
-    // Reset the active task ID
-    activeTaskId = null;
+  let popup = document.getElementById("alarm-popup");
+  popup.style.display = "none";
+
+  if (alarmAudio) {
+    alarmAudio.pause(); // Stop the sound
+    alarmAudio.currentTime = 0; // Reset playback
+  }
 }
+
 
 
 function extend1() {
